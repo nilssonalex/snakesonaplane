@@ -1,0 +1,100 @@
+/* This example shows how to display a moving rainbow pattern on
+ * an APA102-based LED strip. */
+
+/* By default, the APA102 library uses pinMode and digitalWrite
+ * to write to the LEDs, which works on all Arduino-compatible
+ * boards but might be slow.  If you have a board supported by
+ * the FastGPIO library and want faster LED updates, then install
+ * the FastGPIO library and uncomment the next two lines: */
+// #include <FastGPIO.h>
+// #define APA102_USE_FAST_GPIO
+
+#include <APA102.h>
+#include "Pixel.h"
+//struct Pixel {
+  //byte index, r, g, b;
+  //bool on;
+//};
+
+Pixel gameBoard[4][4] = {
+  {{12, 255, 0, 0, true}, {13, 255, 0, 0, false}, {14, 255, 0, 0, false}, {15, 255, 0, 0, false}},
+  {{11, 255, 0, 0, false}, {10, 255, 0, 0, false}, {9, 255, 0, 0, false}, {8, 255, 0, 0, false}},
+  {{4, 255, 0, 0, false}, {5, 255, 0, 0, false}, {6, 255, 0, 0, false}, {7, 255, 0, 0, false}},
+  {{3, 255, 0, 0, false}, {2, 255, 0, 0, false}, {1, 255, 0, 0, false}, {0, 255, 0, 0, false}}
+};
+
+//buttons
+int oldValue = 0;
+
+// timing variables
+int prevMillis = 0;
+int currentMillis = 0;
+int tickTimeMillis = 450;
+int ticks = 0;
+
+// Define which pins to use.
+const uint8_t dataPin = 2;
+const uint8_t clockPin = 3;
+
+// Create an object for writing to the LED strip.
+APA102<dataPin, clockPin> ledStrip;
+
+// Set the number of LEDs to control.
+const uint16_t ledCount = 16;
+
+// Create a buffer for holding the colors (3 bytes per color).
+rgb_color colors[ledCount];
+
+// Set the brightness to use (the maximum is 31).
+const uint8_t brightness = 1;
+
+void setup(){
+  pinMode(10, INPUT);
+  Serial.begin(115200);
+}
+
+void loop(){
+  currentMillis = millis();
+  
+  if (currentMillis - prevMillis >= tickTimeMillis) {
+    
+  }
+
+  render();
+  delay(10);
+}
+
+void render(){
+  input();
+  Pixel currentPixel;
+  for (int row = 0; row < 4; row++){
+    for (int col = 0; col < 4; col++) {
+      currentPixel = gameBoard[row][col];
+      if (currentPixel.on) {
+        colors[currentPixel.index].red = currentPixel.r;
+        colors[currentPixel.index].green = currentPixel.g;
+        colors[currentPixel.index].blue = currentPixel.b;
+      } else {
+        colors[currentPixel.index].red = 0;
+        colors[currentPixel.index].green = 0;
+        colors[currentPixel.index].blue = 0;
+      }
+    }
+  }
+  ledStrip.write(colors, ledCount, 4);
+}
+
+void input() {
+  int newValue = digitalRead(10);
+  if (newValue == HIGH) {
+  }
+  if(newValue != oldValue) {
+    if (newValue == HIGH) {
+      Serial.println("button pressed");
+      gameBoard[0][0].on = !gameBoard[0][0].on; 
+    }
+    oldValue = newValue;
+  }
+}
+// din 10
+// clock 6
