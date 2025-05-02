@@ -85,7 +85,7 @@ bool SnakeGame::isExcluded(uint8_t x, uint8_t y) {
 Position SnakeGame::getRandomPair() {
     Position p;
     do {
-        p.x = random(0, 8);
+        p.x = random(0, 5);
         p.y = random(0, 8);
     } while (isExcluded(p.x, p.y));  // Retry if excluded
     return p;
