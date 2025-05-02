@@ -40,6 +40,12 @@ private:
     bool isExcluded(uint8_t x, uint8_t y);
 
     Position getRandomPair();
+
+    bool isDead(Position pos);
+
+    void reset();
+
+    Position getSnakeHeadPosition();
     
 public:
     // Constructor
