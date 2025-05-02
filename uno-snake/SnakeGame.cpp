@@ -68,3 +68,25 @@ void SnakeGame::updateSnakeHeadPosition(int8_t x, int8_t y) {
     snakeHeadPosition.x = x;
     snakeHeadPosition.y = y;
 }
+
+void SnakeGame::placeFruit() {
+  currentFruit = getRandomPair();
+}
+
+bool SnakeGame::isExcluded(uint8_t x, uint8_t y) {
+    for (int i = 0; i < snakeBody.size(); i++) {
+        if (snakeBody[i].x == x && snakeBody[i].y == y) {
+            return true;  // Found in exclusion list
+        }
+    }
+    return false;
+}
+
+Position SnakeGame::getRandomPair() {
+    Position p;
+    do {
+        p.x = random(0, 8);
+        p.y = random(0, 8);
+    } while (isExcluded(p.x, p.y));  // Retry if excluded
+    return p;
+}

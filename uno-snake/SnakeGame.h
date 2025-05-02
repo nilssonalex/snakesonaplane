@@ -34,6 +34,12 @@ private:
     
     // Helper method
     void updateSnakeHeadPosition(int8_t x, int8_t y);
+
+    void placeFruit();
+
+    bool isExcluded(uint8_t x, uint8_t y);
+
+    Position getRandomPair();
     
 public:
     // Constructor

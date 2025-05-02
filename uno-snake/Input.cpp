@@ -32,32 +32,33 @@ void InputHandler::processInput() {
     int newValueRed = digitalRead(redPin);
     int newValueGreen = digitalRead(greenPin);
 
-    // Yellow button - move right
-    if (input(oldValueYellow, newValueYellow, yellowPin)) {
-        snakeDirection.x = 1;
-        snakeDirection.y = 0;
-    }
-    
-    // Blue button - move down
-    if (input(oldValueBlue, newValueBlue, bluePin)) {
-        snakeDirection.y = 1;
-        snakeDirection.x = 0;
-    }
-    
-    // Red button - move up
-    if (input(oldValueRed, newValueRed, redPin)) {
-        snakeDirection.y = -1;
-        snakeDirection.x = 0;
-    }
-    
-    // Green button - move left
-    if (input(oldValueGreen, newValueGreen, greenPin)) {
-        snakeDirection.x = -1;
-        snakeDirection.y = 0;
+    if (snakeDirection.x == 0) {
+        // Yellow button - move right
+        if (input(oldValueYellow, newValueYellow, yellowPin)) {
+            snakeDirection.x = 1;
+            snakeDirection.y = 0;
+        }
+
+        // Green button - move left
+        if (input(oldValueGreen, newValueGreen, greenPin)) {
+            snakeDirection.x = -1;
+            snakeDirection.y = 0;
+        }
+    } else if (snakeDirection.y == 0) {
+        // Blue button - move down
+        if (input(oldValueBlue, newValueBlue, bluePin)) {
+            snakeDirection.y = 1;
+            snakeDirection.x = 0;
+        }
+        
+        // Red button - move up
+        if (input(oldValueRed, newValueRed, redPin)) {
+            snakeDirection.y = -1;
+            snakeDirection.x = 0;
+        }
     }
 }
 
-// Helper function to detect button presses
 bool InputHandler::input(int& oldValue, int newValue, int pin) {
     newValue = digitalRead(pin);
     bool pressed = false;
