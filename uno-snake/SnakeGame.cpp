@@ -84,7 +84,7 @@ void SnakeGame::update() {
         if (currentCol > 40) {
             currentCol = 0;
         }
-        tickPerSec = 0;
+        //tickPerSec = 0;
         prevMillis = currentMillis;
         gameBoard.clear();
 
@@ -92,7 +92,7 @@ void SnakeGame::update() {
         
         Serial.print("varv");
         Serial.println(tickPerSec);
-        logGameBoardState();
+        //logGameBoardState();
 
         updateSnakeHeadPosition(
             currentSnakeHeadPosition.x + inputHandler.snakeDirection.x, 
