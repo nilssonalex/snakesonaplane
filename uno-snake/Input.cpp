@@ -2,15 +2,15 @@
 #include <Arduino.h>
 
 // Constructor implementation
-InputHandler::InputHandler(int yellow_pin, int blue_pin, int red_pin, int green_pin) :
-    yellowPin(yellow_pin),
-    bluePin(blue_pin),
-    redPin(red_pin),
-    greenPin(green_pin),
-    oldValueYellow(LOW),
-    oldValueBlue(LOW),
-    oldValueRed(LOW),
-    oldValueGreen(LOW)
+InputHandler::InputHandler(int up_pin, int down_pin, int right_pin, int left_pin) :
+    upPin(up_pin),
+    downPin(down_pin),
+    rightPin(right_pin),
+    leftPin(left_pin),
+    oldValueUp(LOW),
+    oldValueDown(LOW),
+    oldValueRight(LOW),
+    oldValueLeft(LOW)
 {
     // Initialize snake direction (moving right by default)
     snakeDirection.x = 1;
@@ -19,44 +19,53 @@ InputHandler::InputHandler(int yellow_pin, int blue_pin, int red_pin, int green_
 
 // Setup method to initialize pins
 void InputHandler::setup() {
-    pinMode(yellowPin, INPUT);
-    pinMode(bluePin, INPUT);
-    pinMode(redPin, INPUT);
-    pinMode(greenPin, INPUT);
+    pinMode(upPin, INPUT);
+    pinMode(downPin, INPUT);
+    pinMode(rightPin, INPUT);
+    pinMode(leftPin, INPUT);
+    
 }
 
 // Process all input buttons
 void InputHandler::processInput() {
-    int newValueYellow = digitalRead(yellowPin);
-    int newValueBlue = digitalRead(bluePin);
-    int newValueRed = digitalRead(redPin);
-    int newValueGreen = digitalRead(greenPin);
+    if (didInput) return;
 
     if (snakeDirection.x == 0) {
-        // Yellow button - move right
-        if (input(oldValueYellow, newValueYellow, yellowPin)) {
+        int newValueRight = digitalRead(rightPin);
+        int newValueLeft = digitalRead(leftPin);
+    
+        // move right
+        if (input(oldValueRight, newValueRight, rightPin)) {
             snakeDirection.x = 1;
             snakeDirection.y = 0;
+            didInput = true;
         }
 
-        // Green button - move left
-        if (input(oldValueGreen, newValueGreen, greenPin)) {
+        // move left
+        if (input(oldValueLeft, newValueLeft, leftPin)) {
             snakeDirection.x = -1;
             snakeDirection.y = 0;
+            didInput = true;
         }
     } else if (snakeDirection.y == 0) {
-        // Blue button - move down
-        if (input(oldValueBlue, newValueBlue, bluePin)) {
+        int newValueDown = digitalRead(downPin);
+        int newValueUp = digitalRead(upPin);
+
+        // move down
+        if (input(oldValueDown, newValueDown, downPin)) {
             snakeDirection.y = 1;
             snakeDirection.x = 0;
+            didInput = true;
         }
         
-        // Red button - move up
-        if (input(oldValueRed, newValueRed, redPin)) {
+        // move up
+        if (input(oldValueUp, newValueUp, upPin)) {
             snakeDirection.y = -1;
             snakeDirection.x = 0;
+            didInput = true;
         }
     }
+
 }
 
 bool InputHandler::input(int& oldValue, int newValue, int pin) {

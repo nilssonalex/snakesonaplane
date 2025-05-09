@@ -5,7 +5,7 @@
 #include <Arduino.h>
 
 struct Position {
-    int8_t x, y;
+    uint8_t x, y;
 };
 
 #endif

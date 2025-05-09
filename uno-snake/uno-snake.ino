@@ -2,8 +2,8 @@
 #include "SnakeGame.h"
 
 // LED strip configuration
-const uint16_t ledCount = 40;
-const uint8_t brightness = 31;
+const uint16_t ledCount = 124;
+const uint8_t brightness = 5;
 
 // Create the snake game instance
 SnakeGame snakeGame(ledCount, brightness);

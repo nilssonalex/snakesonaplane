@@ -33,7 +33,7 @@ private:
     int currentCol;
     
     // Helper method
-    void updateSnakeHeadPosition(int8_t x, int8_t y);
+    void updateSnakeHeadPosition(uint8_t x, uint8_t y);
 
     void placeFruit();
 
@@ -46,6 +46,8 @@ private:
     void reset();
 
     Position getSnakeHeadPosition();
+
+    void logGameBoardState();
     
 public:
     // Constructor

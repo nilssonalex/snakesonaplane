@@ -4,6 +4,7 @@
 
 #include <APA102.h>
 #include "Pixel.h"
+#include "constants.h"
 
 class Renderer {
   private:
@@ -12,7 +13,7 @@ class Renderer {
     const uint16_t ledCount;
     const uint8_t brightness;
     
-    APA102<2, 3>* ledStrip;  // Changed to pointer with template params
+    APA102<27, 26>* ledStrip;  // Changed to pointer with template params
     rgb_color* colors;
     
   public:
@@ -20,7 +21,7 @@ class Renderer {
     ~Renderer();
     
     void render();
-    void updateColors(Pixel gameBoard[][5]);
+    void updateColors(Pixel gameBoard[][C::BOARD_X]);
 };
 
 #endif

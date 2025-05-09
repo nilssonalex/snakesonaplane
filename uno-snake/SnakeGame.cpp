@@ -1,15 +1,18 @@
 #include "SnakeGame.h"
 #include <Arduino.h>
+#include "constants.h"
 
-bool gameBoardState[8][5] = {
-  {false, false, false, false, false},
-  {false, false, false, false, false},
-  {false, false, false, false, false},
-  {false, false, false, false, false},
-  {false, false, false, false, false},
-  {false, false, false, false, false},
-  {false, false, false, false, false},
-  {false, false, false, false, false}
+bool gameBoardState[C::BOARD_Y][C::BOARD_X] = {
+  {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false},
+  {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false},
+  {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false},
+  {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false},
+  {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false},
+  {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false},
+  {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false},
+  {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false},
+  {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false},
+  {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false},
 };
 
 // Constructor implementation
@@ -21,7 +24,7 @@ SnakeGame::SnakeGame(uint16_t led_count, uint8_t bright) :
     currentFruit({255, 255}),
     prevMillis(0),
     currentMillis(0),
-    tickTimeMillis(1000),
+    tickTimeMillis(250),
     ticks(0),
     tickPerSec(0),
     currentCol(0)
@@ -33,10 +36,10 @@ SnakeGame::SnakeGame(uint16_t led_count, uint8_t bright) :
 void SnakeGame::setup() {
     snakeBody.push({1, 1});
     snakeBody.push({2, 1});
-    snakeBody.push({3, 1});
+    // snakeBody.push({3, 1});
     gameBoardState[1][1] = true;
     gameBoardState[1][2] = true;
-    gameBoardState[1][3] = true;
+    // gameBoardState[1][3] = true;
 
     randomSeed(analogRead(A0));
 
@@ -51,10 +54,24 @@ void SnakeGame::setup() {
     // Place the snake head
     //snakeHeadPosition = {0, 0};
     //gameBoard.setPixel(snakeHeadPosition.x, snakeHeadPosition.y, true, 0, 255, 0);
-    
+    logGameBoardState();
     // Update the renderer
     renderer.updateColors(gameBoard.getBoard());
     renderer.render();
+}
+
+void SnakeGame::logGameBoardState() {
+  for (int y = 0; y < 4; y++) {
+    for (int x = 0; x < 4; x++) {
+      if (gameBoardState[y][x]) {
+        Serial.print("x");
+      } else {
+        Serial.print("o");
+      }
+    }
+    Serial.println("");
+    Serial.println("-------------------");
+  }
 }
 
 // Game update function
@@ -73,6 +90,10 @@ void SnakeGame::update() {
 
         Position currentSnakeHeadPosition = getSnakeHeadPosition();
         
+        Serial.print("varv");
+        Serial.println(tickPerSec);
+        logGameBoardState();
+
         updateSnakeHeadPosition(
             currentSnakeHeadPosition.x + inputHandler.snakeDirection.x, 
             currentSnakeHeadPosition.y + inputHandler.snakeDirection.y
@@ -91,6 +112,7 @@ void SnakeGame::update() {
 
         //gameBoard.setPixel(snakeHeadPosition.x, snakeHeadPosition.y, true, 0, 255, 0);
         renderer.updateColors(gameBoard.getBoard());
+        inputHandler.didInput = false;
     }
     
     inputHandler.processInput();
@@ -98,21 +120,21 @@ void SnakeGame::update() {
 }
 
 // Helper method to update snake head position with boundary checking
-void SnakeGame::updateSnakeHeadPosition(int8_t x, int8_t y) {
+void SnakeGame::updateSnakeHeadPosition(uint8_t x, uint8_t y) {
   if (isDead({x, y})) {
     //Serial.println("so dead");
     reset();
     return;
   }
-  if (x == -1 || x == 8 || y == -1 || y == 8) return;
+  //if (x == -1 || x == 4 || y == -1 || y == 4) return;
   Position currentSnakeHeadPosition = getSnakeHeadPosition();
   if (posEqual({x, y}, currentFruit)) {
     placeFruit();
   } else {
-    gameBoardState[snakeBody[0].x][snakeBody[0].y] = false;
+    gameBoardState[snakeBody[0].y][snakeBody[0].x] = false;
     snakeBody.pop();
   }
-  gameBoardState[x][y] = true;
+  gameBoardState[y][x] = true;
   snakeBody.push({x, y});
 }
 
@@ -132,33 +154,29 @@ bool SnakeGame::isExcluded(uint8_t x, uint8_t y) {
 Position SnakeGame::getRandomPair() {
     Position p;
     do {
-        p.x = random(0, 5);
-        p.y = random(0, 8);
+        p.x = random(1, 15);
+        p.y = random(1, 8);
     } while (isExcluded(p.x, p.y));  // Retry if excluded
     return p;
 }
 
 bool SnakeGame::isDead(Position pos) {
   if (gameBoardState[pos.y][pos.x]) {
+    Serial.println("collission with self");
     return true;
   }
-  if (pos.x < 0 || pos.x > 4) {
-    Serial.println("out of bounds x");
+  if(gameBoard.getPixelIndex(pos.x, pos.y) == C::NOT_PIXEL) {
+    Serial.println("collission with wall");
+    return true;
+  }
 
-    return true;
-  }
-  if (pos.y < 0 || pos.y > 7) {
-    Serial.println("out of bounds y");
-
-    return true;
-  }
   return false;
 }
 
 void SnakeGame::reset() {
   //resetta gameBoardState
-  for (byte x = 0; x < 5; x++) {
-    for (byte y = 0; y < 8; y++) {
+  for (byte x = 0; x < C::BOARD_X; x++) {
+    for (byte y = 0; y < C::BOARD_Y; y++) {
       gameBoardState[y][x] = false;
     }
   }
@@ -166,10 +184,8 @@ void SnakeGame::reset() {
   //sätt tillbaka ormen till start, och gameBoardState
   snakeBody.push({1, 1});
   snakeBody.push({2, 1});
-  snakeBody.push({3, 1});
   gameBoardState[1][1] = true;
-  gameBoardState[2][1] = true;
-  gameBoardState[3][1] = true;
+  gameBoardState[1][2] = true;
 
   //sätt rörelsevektorn
   inputHandler.snakeDirection.x = 1;
