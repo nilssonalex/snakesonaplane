@@ -13,7 +13,7 @@ class Renderer {
     const uint16_t ledCount;
     const uint8_t brightness;
     
-    APA102<27, 26>* ledStrip;  // Changed to pointer with template params
+    APA102<22, 21>* ledStrip;  // Changed to pointer with template params
     rgb_color* colors;
     
   public:

@@ -8,7 +8,7 @@ Renderer::Renderer(uint16_t ledCount, uint8_t brightness) :
   ledCount(ledCount),
   brightness(brightness)
 {
-  ledStrip = new APA102<27, 26>();
+  ledStrip = new APA102<22, 21>();
   colors = new rgb_color[ledCount];
 }
 

@@ -2,15 +2,17 @@
 #include <Arduino.h>
 
 // Constructor implementation
-InputHandler::InputHandler(int up_pin, int down_pin, int right_pin, int left_pin) :
+InputHandler::InputHandler(int up_pin, int down_pin, int right_pin, int left_pin, int click_pin) :
     upPin(up_pin),
     downPin(down_pin),
     rightPin(right_pin),
     leftPin(left_pin),
+    clickPin(click_pin),
     oldValueUp(LOW),
     oldValueDown(LOW),
     oldValueRight(LOW),
-    oldValueLeft(LOW)
+    oldValueLeft(LOW),
+    oldValueClick(LOW)
 {
     // Initialize snake direction (moving right by default)
     snakeDirection.x = 1;
@@ -23,7 +25,7 @@ void InputHandler::setup() {
     pinMode(downPin, INPUT);
     pinMode(rightPin, INPUT);
     pinMode(leftPin, INPUT);
-    
+    pinMode(clickPin, INPUT);   
 }
 
 // Process all input buttons
@@ -65,7 +67,16 @@ void InputHandler::processInput() {
             didInput = true;
         }
     }
+}
 
+bool InputHandler::processClick() {
+    int newValueClick = digitalRead(clickPin);
+
+    if (input(oldValueClick, newValueClick, clickPin)) {
+        return true;
+    }
+
+    return false;
 }
 
 bool InputHandler::input(int& oldValue, int newValue, int pin) {
