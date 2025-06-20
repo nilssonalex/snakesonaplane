@@ -1,0 +1,56 @@
+<!-- public/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Snake on a plane</title>
+    <link rel="stylesheet" href="https://unpkg.com/mvp.css">
+</head>
+
+<body>
+    <header>
+        <h1>Snake on a plane</h1>
+    </header>
+    <section>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem;">
+            <button onclick="sendCmd('up')">⬆️ Up</button>
+            <div style="display: flex; gap: 1rem;">
+                <button onclick="sendCmd('left')">⬅️ Left</button>
+                <button onclick="sendCmd('right')">➡️ Right</button>
+            </div>
+            <button onclick="sendCmd('down')">⬇️ Down</button>
+        </div>
+    </section>
+    <section>
+        <aside>
+            <h2>Status</h2>
+            <pre id="log" style="min-height: 4em;"></pre>
+        </aside>
+    </section>
+    <script>
+        const log = document.getElementById('log');
+        const ws = new WebSocket(`ws://${location.host}`);
+
+        ws.onopen = () => {
+            log.textContent += 'WebSocket connected\n';
+        };
+
+        ws.onmessage = (event) => {
+            log.textContent += `Server: ${event.data}\n`;
+            log.scrollTop = log.scrollHeight;
+        };
+
+        ws.onclose = () => {
+            log.textContent += 'WebSocket disconnected\n';
+        };
+
+        function sendCmd(cmd) {
+            ws.send(JSON.stringify({ cmd }));
+            log.textContent += `Sent: ${cmd}\n`;
+            log.scrollTop = log.scrollHeight;
+        }
+    </script>
+</body>
+
+</html>
