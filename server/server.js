@@ -16,9 +16,9 @@ function postCommand(cmd) {
   const postData = querystring.stringify({ cmd });
 
   const options = {
-    hostname: '192.168.1.213',
+    hostname: 'picopcb.kontor.ikab.io',
     port: 80,
-    path: '/command',
+    path: '/command/',
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
