@@ -16,7 +16,7 @@ bool gameBoardState[C::BOARD_Y][C::BOARD_X] = {
 };
 
 // Constructor implementation
-SnakeGame::SnakeGame(uint16_t led_count, uint8_t bright) :
+SnakeGame::SnakeGame(uint16_t led_count, uint8_t bright, InputHandler& inputHandlerMain) :
     ledCount(led_count),
     brightness(bright),
     renderer(led_count, bright),
@@ -24,10 +24,11 @@ SnakeGame::SnakeGame(uint16_t led_count, uint8_t bright) :
     currentFruit({255, 255}),
     prevMillis(0),
     currentMillis(0),
-    tickTimeMillis(250),
+    tickTimeMillis(900),
     ticks(0),
     tickPerSec(0),
-    currentCol(0)
+    currentCol(0),
+    inputHandler(inputHandlerMain)
 {
     // Constructor initializes variables with initialization list
 }
@@ -46,7 +47,7 @@ void SnakeGame::setup() {
     placeFruit();
 
     // Initialize input handler
-    inputHandler.setup();
+    //inputHandler.setup();
     
     // Clear the game board
     gameBoard.clear();
@@ -61,8 +62,8 @@ void SnakeGame::setup() {
 }
 
 void SnakeGame::logGameBoardState() {
-  for (int y = 0; y < 4; y++) {
-    for (int x = 0; x < 4; x++) {
+  for (int y = 0; y < 8; y++) {
+    for (int x = 0; x < 12; x++) {
       if (gameBoardState[y][x]) {
         Serial.print("x");
       } else {
@@ -92,7 +93,7 @@ void SnakeGame::update() {
         
         Serial.print("varv");
         Serial.println(tickPerSec);
-        //logGameBoardState();
+        // logGameBoardState();
 
         updateSnakeHeadPosition(
             currentSnakeHeadPosition.x + inputHandler.snakeDirection.x, 
@@ -113,6 +114,7 @@ void SnakeGame::update() {
         //gameBoard.setPixel(snakeHeadPosition.x, snakeHeadPosition.y, true, 0, 255, 0);
         renderer.updateColors(gameBoard.getBoard());
         inputHandler.didInput = false;
+        inputHandler.flushWebCommand();
     }
     
     inputHandler.processInput();

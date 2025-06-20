@@ -33,8 +33,8 @@ void InputHandler::processInput() {
     if (didInput) return;
 
     if (snakeDirection.x == 0) {
-        int newValueRight = digitalRead(rightPin);
-        int newValueLeft = digitalRead(leftPin);
+        int newValueRight = webCommand == C::RIGHT_COMMAND;//digitalRead(rightPin);
+        int newValueLeft = webCommand == C::LEFT_COMMAND;//digitalRead(leftPin);
     
         // move right
         if (input(oldValueRight, newValueRight, rightPin)) {
@@ -50,8 +50,10 @@ void InputHandler::processInput() {
             didInput = true;
         }
     } else if (snakeDirection.y == 0) {
-        int newValueDown = digitalRead(downPin);
-        int newValueUp = digitalRead(upPin);
+        //int newValueDown = digitalRead(downPin);
+        
+        int newValueDown = webCommand == C::DOWN_COMMAND;      
+        int newValueUp = webCommand == C::UP_COMMAND;//digitalRead(upPin);
 
         // move down
         if (input(oldValueDown, newValueDown, downPin)) {
@@ -69,6 +71,22 @@ void InputHandler::processInput() {
     }
 }
 
+void InputHandler::flushWebCommand() {
+    webCommand = 'n';
+}
+
+void InputHandler::setWebCommand(byte command) {
+    Serial.println("setweb");
+    webCommand = command;
+    Serial.print("aftersetweb: ");
+    Serial.println(webCommand);
+}
+
+void InputHandler::printStatus() {
+    Serial.print("status: ");
+    Serial.println(webCommand);
+}
+
 bool InputHandler::processClick() {
     int newValueClick = digitalRead(clickPin);
 
@@ -80,7 +98,7 @@ bool InputHandler::processClick() {
 }
 
 bool InputHandler::input(int& oldValue, int newValue, int pin) {
-    newValue = digitalRead(pin);
+    //newValue = digitalRead(pin);
     bool pressed = false;
     
     if (newValue != oldValue) {

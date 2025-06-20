@@ -13,7 +13,7 @@ private:
     // Game components
     GameBoard gameBoard;
     Renderer renderer;
-    InputHandler inputHandler;
+    InputHandler& inputHandler;
     
     // LED configuration
     const uint16_t ledCount;
@@ -51,7 +51,7 @@ private:
     
 public:
     // Constructor
-    SnakeGame(uint16_t led_count, uint8_t bright);
+    SnakeGame(uint16_t led_count, uint8_t bright, InputHandler& InputHandlerMain);
     
     // Game initialization
     void setup();

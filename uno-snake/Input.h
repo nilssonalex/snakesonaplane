@@ -18,6 +18,8 @@ private:
     const int rightPin;
     const int leftPin;
     const int clickPin;
+
+    byte webCommand;
     
     // Helper function to detect button presses
     bool input(int& oldValue, int newValue, int pin);
@@ -38,6 +40,12 @@ public:
     void processInput();
 
     bool processClick();
+
+    void setWebCommand(byte command);
+
+    void flushWebCommand();
+
+    void printStatus();
 };
 
 #endif // INPUT_H

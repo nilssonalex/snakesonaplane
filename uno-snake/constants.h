@@ -10,6 +10,11 @@ namespace C {
     constexpr uint8_t INPUT_PIN_LEFT = 20;
     constexpr uint8_t INPUT_PIN_RIGHT = 17;
     constexpr uint8_t INPUT_PIN_CLICK = 16;
+    constexpr byte DOWN_COMMAND = 'd';
+    constexpr byte UP_COMMAND = 'u';
+    constexpr byte LEFT_COMMAND = 'l';
+    constexpr byte RIGHT_COMMAND = 'r';
+
 }
 
 #endif
