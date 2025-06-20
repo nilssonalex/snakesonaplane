@@ -5,7 +5,7 @@ const WebSocket = require('ws');
 const querystring = require('querystring');
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 app.use(express.static('public'));
 
@@ -16,9 +16,9 @@ function postCommand(cmd) {
   const postData = querystring.stringify({ cmd });
 
   const options = {
-    hostname: 'picopcb.kontor.ikab.io',
+    hostname: '192.168.1.213',
     port: 80,
-    path: '/command/',
+    path: '/command',
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
@@ -27,7 +27,6 @@ function postCommand(cmd) {
   };
 
   const req = http.request(options, (res) => {
-    // Optionally handle response here
     let data = '';
     res.on('data', (chunk) => { data += chunk; });
     res.on('end', () => {
@@ -51,7 +50,7 @@ wss.on('connection', (ws) => {
       const data = JSON.parse(message);
       if (['up', 'down', 'left', 'right'].includes(data.cmd)) {
         console.log(`Received command: ${data.cmd}`);
-        postCommand(data.cmd); // <-- Forward command as HTTP POST
+        postCommand(data.cmd);
         ws.send(JSON.stringify({ status: 'ok', command: data.cmd }));
       } else {
         ws.send(JSON.stringify({ status: 'error', error: 'Invalid command' }));
